@@ -1,4 +1,4 @@
-﻿
+
 # HyperVerge DB Validation API Documentation
 
 ## Overview
@@ -15,12 +15,16 @@ This documentation describes the validation API. The postman collection can be f
 	- [API Call structure](#api-call-structure)
 	- [Request structure](#request-structure)
 		- [Verify PAN](#verify-pan)
+		- [PAN Name Fetch](#pan-name-fetch)
 		- [DL Verification and Extraction](#dl-verification-and-extraction)
 		- [VoterId Check](voterId-check)
+		- [Bank Account Check](bank-account-check)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
+		- [PAN Name Fetch](#pan-name-fetch-1)
 		- [DL Verification and Extraction](#dl-verification-and-extraction-1)
 		- [VoterId Check](voterId-check-1)
+		- [Bank Account Check](bank-account-check-1)
 	- [Status Codes](#status-codes)
 
 
@@ -71,7 +75,21 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *pan* : PAN Number. Should be of the format 'CCCCCDDDDC' where the C is character and D is digit.
 		* *name* : Name of the PAN holder
 		* *dob* : Date of Birth of the PAN holder. Should of the format dd/mm/yyyy
-2) **DL Verification and Extraction**
+2) **PAN Name Fetch**
+    * **URL**
+      - /api/getNameFromPAN
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *pan* : PAN Number. Should be of the format 'CCCCCDDDDC' where the C is character and D is digit.
+3) **DL Verification and Extraction**
     * **URL**
       - /api/checkDL
 
@@ -86,7 +104,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* **Request Body**
 		* *dlNumber* : DL Number
 		* *dob* : Date of Birth of the DL holder. Should of the format dd-mm-yyyy
-3) **VoterId  Extraction**
+4) **VoterId  Extraction**
     * **URL**
       - /api/checkVoterId
 
@@ -101,15 +119,37 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* **Request Body**
 		* *epicNumber* : EPIC Number present in VoterId
 
+5) **Bank Account Verification**
+    * **URL**
+      - /api/checkBankAccount
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *ifsc* : IFSC Code of the Account's Branch
+		* *accountNumber* :  Account Number of the Bank Account
 
 ## Request Structure
 
 ### Verify PAN
 ```
 {
-    panNumber: <required. String of length 10 CCCCCDDDDC>,
+    pan: <required. String of length 10 CCCCCDDDDC>,
     name: <required. String parameter>,
     dob: <required. String of format 'DD/MM/YYYY'>
+}
+```
+
+### PAN Name Fetch
+```
+{
+    pan: <required. String of length 10 CCCCCDDDDC>
 }
 ```
 ### DL Verification and Extraction
@@ -123,6 +163,13 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 ```
 {
     epicNumber: <required, String of length between 6 and 13>
+}
+```
+### Bank Account Verification
+```
+{
+    ifsc: <required, String of length 11 characters>,
+    accountNumber: <required, String>
 }
 ```
 
@@ -168,6 +215,36 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		       "error": "Entered id is not found in any database"
 	       }
 
+### PAN Name Fetch
+
+* Success Response:
+
+	* Code: 200
+	* Incase of a successful validation, the response would have the following schema.
+      ```
+      {
+         "status": "success",
+         "statusCode": "200",
+         "result": {
+           "name": <Name of the PAN Holder>
+         }
+      }
+      ```
+* Error Responses:
+	 * Incase the any input details is not correct, the following response will be sent with error code `422` with following message
+
+		   {
+			   "status": "failure",
+	   	       "statusCode": "422",
+		       "error": "Invalid value passed for an input"
+	       }
+	 * Incase the PAN Number is not present in DB, the following response will be sent with error code `422` with following message
+
+		   {
+			   "status": "failure",
+	   	       "statusCode": "422",
+		       "error": "Entered id is not found in any database"
+	       }
   
 ### DL Verification and Extraction
 * Success Response:
@@ -269,7 +346,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		```	 	
 		{
 			"status": "failure",
-	        "statusCode": "422",
+	    "statusCode": "422",
 			"error": "Invalid value passed for an input"
 		}
 		```
@@ -277,10 +354,49 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		```	 	
 		{
 			"status": "failure",
-	        "statusCode": "422",
+	    "statusCode": "422",
 			"error": "Entered id is not found in any database"
 		}
 		```
+
+### Bank Account Verification
+* Success Response:
+
+	* Code: **200**
+	* result.bankTxnStatus: **true**
+	* Incase of a successful validation, the response would have the following schema.
+
+  ```
+  {
+     "status": "success",
+     "statusCode": "200",
+     "result": {
+       "bankResponse": "Transaction Successful",
+       "ifsc": <IFSC Code>,
+       "accountNumber": <Account Number>,
+       "accountName": <Name of the Account Holder>,
+       "bankTxnStatus": true
+     }
+  }
+  ```
+
+* Error Responses:
+
+	 * Incase the Bank Account Number is not correct, then following response will be sent with status code `200` and **result.bankTxnStatus** `false`
+	   ```
+	   {
+	       "status": "success",
+           "statusCode": "200",
+           "result": {
+             "bankResponse": <Failure Reason>,
+             "ifsc": <IFSC Code>,
+             "accountNumber": <Account Number>,
+             "accountName": "",
+             "bankTxnStatus": false
+         }
+       }
+       ```
+
 #### Common Errors:
   * Incase the format of input is incorrect, the following response will be sent status code `400`
     
@@ -322,4 +438,5 @@ The following are the various error codes
 |500|Internal Server Error - Please retry|
 |503|Source not Available - Please retry after some time|
 |404|Invalid Endpoint - Please check the API call|
+
 

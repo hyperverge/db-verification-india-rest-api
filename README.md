@@ -17,14 +17,14 @@ This documentation describes the validation API. The postman collection can be f
 		- [Verify PAN](#verify-pan)
 		- [PAN Name Fetch](#pan-name-fetch)
 		- [DL Verification and Extraction](#dl-verification-and-extraction)
-		- [VoterId Check](voterId-check)
-		- [Bank Account Check](bank-account-check)
+		- [VoterId Check](#voterId-check)
+		- [Bank Account Verification](#bank-account-verification)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
 		- [DL Verification and Extraction](#dl-verification-and-extraction-1)
-		- [VoterId Check](voterId-check-1)
-		- [Bank Account Check](bank-account-check-1)
+		- [VoterId Check](#voterId-check-1)
+		- [Bank Account Verification](#bank-account-verification-1)
 	- [Status Codes](#status-codes)
 
 
@@ -81,7 +81,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 
 	* **Method**
 	`POST`
-
+	
 	* **Header**
 		* content-type : application/json
 		* appId
@@ -125,7 +125,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 
 	* **Method**
 	`POST`
-
+	
 	* **Header**
 		* content-type : application/json
 		* appId
@@ -219,7 +219,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 
 * Success Response:
 
-	* Code: 200
+	* Code: 200 
 	* Incase of a successful validation, the response would have the following schema.
       ```
       {
@@ -232,14 +232,14 @@ Please do not expose the appid and appkey on browser applications. In case of a 
       ```
 * Error Responses:
 	 * Incase the any input details is not correct, the following response will be sent with error code `422` with following message
-
+	   
 		   {
 			   "status": "failure",
 	   	       "statusCode": "422",
 		       "error": "Invalid value passed for an input"
 	       }
 	 * Incase the PAN Number is not present in DB, the following response will be sent with error code `422` with following message
-
+	   
 		   {
 			   "status": "failure",
 	   	       "statusCode": "422",
@@ -379,9 +379,9 @@ Please do not expose the appid and appkey on browser applications. In case of a 
      }
   }
   ```
-
+  
 * Error Responses:
-
+	 
 	 * Incase the Bank Account Number is not correct, then following response will be sent with status code `200` and **result.bankTxnStatus** `false`
 	   ```
 	   {
@@ -438,5 +438,3 @@ The following are the various error codes
 |500|Internal Server Error - Please retry|
 |503|Source not Available - Please retry after some time|
 |404|Invalid Endpoint - Please check the API call|
-
-

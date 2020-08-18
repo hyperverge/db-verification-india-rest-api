@@ -19,14 +19,16 @@ This documentation describes the validation API. The postman collection can be f
 		- [DL Verification and Extraction](#dl-verification-and-extraction)
 		- [VoterId Check](#voterId-check)
 		- [Bank Account Verification](#bank-account-verification)
-		- [Passport Verification](#verify-passport)
+		- [Passport Verification](#passport-verification)
+		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
 		- [DL Verification and Extraction](#dl-verification-and-extraction-1)
 		- [VoterId Check](#voterId-check-1)
 		- [Bank Account Verification](#bank-account-verification-1)
-		- [Passport Verification](#verify-passport-1)
+		- [Passport Verification](#passport-verification-1)
+		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status-1)
 	- [Status Codes](#status-codes)
 
 
@@ -151,7 +153,23 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 
 	* **Request Body**
 		* *fileNo* : The Passport Reference File Number 
-		* *dob* :  Date of Birth as mentioned in the 
+		* *dob* :  Date of Birth
+
+7) **Aadhaar Pan Link Status**
+    * **URL**
+      - /api/verifyAadhaarPanLink
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *aadhaarNumber* : Aadhaar Number
+		* *panNumber* :  Pan Number
 
 ## Request Structure
 
@@ -190,14 +208,20 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     accountNumber: <required, String>
 }
 ```
-### Verify Passport 
+### Passport Verification
 ```
 {
     fileNo: <required, String>,
     dob: <required, String>
 }
 ```
-
+### Aadhaar Pan Link Status
+```
+{
+    aadhaarNumber: <required, String>,
+    panNumber: <required, String>
+}
+```
 ## Response Structure
 
 ### Verify PAN
@@ -428,8 +452,8 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* Code: **200**
 	* Incase of a successful validation, the response would have the following schema.
 
-  ```
-  {
+```
+{
     "status": "success",
     "statusCode": "200",
     "result": {
@@ -449,20 +473,48 @@ Please do not expose the appid and appkey on browser applications. In case of a 
             "nameFromPassport": "OMKAR MILIND"
         },
         "typeOfApplication": "Tatkaal"
-    }
+ }
 }
-  ```
+```
   
 * Error Responses:
 	 
 	 * Incase the  file Number or dob are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
-	   ```
-	   {
+```
+{
     "status": "failure",
     "statusCode": "422",
     "error": "Entered id is not found in any database"
 }
-       ``` 
+```
+
+### Aadhaar Pan Link Status
+
+* Success Response:
+
+	* Code: **200**
+	* Incase of a successful validation, the response would have the following schema.
+
+```
+{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "message": "Your PAN is linked to Aadhaar Number  XXXX XXXX 2071."
+	}
+}
+```
+
+* Error Responses:
+
+	 * Incase the  aadhaar number and pan number are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
+```
+{
+    "status": "failure",
+    "statusCode": "422",
+    "error": "Invalid Pan or Aadhaar"
+}
+```
 
 #### Common Errors:
   * Incase the format of input is incorrect, the following response will be sent status code `400`
@@ -498,10 +550,12 @@ The following are the various error codes
 |Code|Description|
 |----|----|
 |200|Success - Data was present in DB and the necessary details have been returned in the body|
-|422|Not found in DB or invalid input combination|
 |400|Invalid Input Format or Missing Input parameter. Please check your input to the API|
 |401|Unauthorized - Please contact HyperVerge|
+|404|Invalid Endpoint - Please check the API call|
+|422|Not found in DB or invalid input combination|
 |429|Rate Limit Exceeded - Please contact HyperVerge to increase rate limit|
 |500|Internal Server Error - Please retry|
 |503|Source not Available - Please retry after some time|
-|404|Invalid Endpoint - Please check the API call|
+|504|Issue with the external service|
+

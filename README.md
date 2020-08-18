@@ -19,12 +19,14 @@ This documentation describes the validation API. The postman collection can be f
 		- [DL Verification and Extraction](#dl-verification-and-extraction)
 		- [VoterId Check](#voterId-check)
 		- [Bank Account Verification](#bank-account-verification)
+		- [Passport Verification](#verify-passport)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
 		- [DL Verification and Extraction](#dl-verification-and-extraction-1)
 		- [VoterId Check](#voterId-check-1)
 		- [Bank Account Verification](#bank-account-verification-1)
+		- [Passport Verification](#verify-passport-1)
 	- [Status Codes](#status-codes)
 
 
@@ -135,6 +137,22 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *ifsc* : IFSC Code of the Account's Branch
 		* *accountNumber* :  Account Number of the Bank Account
 
+6) **Passport Verification**
+    * **URL**
+      - /api/verifyPassport
+
+	* **Method**
+	`POST`
+	
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *fileNo* : The Passport Reference File Number 
+		* *dob* :  Date of Birth as mentioned in the 
+
 ## Request Structure
 
 ### Verify PAN
@@ -170,6 +188,13 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 {
     ifsc: <required, String of length 11 characters>,
     accountNumber: <required, String>
+}
+```
+### Verify Passport 
+```
+{
+    fileNo: <required, String>,
+    dob: <required, String>
 }
 ```
 
@@ -396,6 +421,48 @@ Please do not expose the appid and appkey on browser applications. In case of a 
          }
        }
        ```
+ 
+### Passport Verification
+* Success Response:
+
+	* Code: **200**
+	* Incase of a successful validation, the response would have the following schema.
+
+  ```
+  {
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "applicationDate": "14/05/2018",
+        "dateOfIssue": {
+            "dispatchedOnFromSource": "14/05/2018",
+            "dateOfIssueMatch": null
+        },
+        "passportNumber": {
+            "passportNumberFromSource": "S3733862",
+            "passportNumberMatch": null
+        },
+        "name": {
+            "nameScore": null,
+            "nameMatch": null,
+            "surnameFromPassport": "SHIRHATTI",
+            "nameFromPassport": "OMKAR MILIND"
+        },
+        "typeOfApplication": "Tatkaal"
+    }
+}
+  ```
+  
+* Error Responses:
+	 
+	 * Incase the  file Number or dob are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
+	   ```
+	   {
+    "status": "failure",
+    "statusCode": "422",
+    "error": "Entered id is not found in any database"
+}
+       ``` 
 
 #### Common Errors:
   * Incase the format of input is incorrect, the following response will be sent status code `400`

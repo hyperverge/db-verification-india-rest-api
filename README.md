@@ -154,6 +154,9 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* **Request Body**
 		* *fileNo* : The Passport Reference File Number 
 		* *dob* :  Date of Birth
+		* *doi* :  Date of Issue
+		* *passportNo* :  Passport Number
+		* *name* :  Name on Passport
 
 7) **Aadhaar Pan Link Status**
     * **URL**
@@ -212,7 +215,10 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 ```
 {
     fileNo: <required, String>,
-    dob: <required, String>
+    dob: <required, String>,
+    doi: <String>,
+    passportNo: <String>,
+    name: <String>
 }
 ```
 ### Aadhaar Pan Link Status

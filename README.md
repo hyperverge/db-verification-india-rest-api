@@ -493,7 +493,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 * Success Response:
 
 	* Code: **200**
-	* Incase of a successful validation, the response would have the following schema.
+	* Incase the Aadhaar and Pan are linked, the response would have the following schema.
 
 ```
 {
@@ -502,6 +502,21 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     "result": {
         "message": "Your PAN is linked to Aadhaar Number  XXXX XXXX 2071."
 	}
+}
+```
+* Success Response:
+
+	* Code: **200**
+	* Incase the Aadhar and Pan are not linked, the response would have the following schema.
+
+```
+{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "code": 535,
+        "message": "Aadhar and Pan are not linked"
+    }
 }
 ```
 

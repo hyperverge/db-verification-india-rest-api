@@ -457,23 +457,23 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     "status": "success",
     "statusCode": "200",
     "result": {
-        "applicationDate": "14/05/2018",
+        "applicationDate": "10/10/1000",
         "dateOfIssue": {
-            "dispatchedOnFromSource": "14/05/2018",
-            "dateOfIssueMatch": null
+            "dispatchedOnFromSource": "10/10/1000",
+            "dateOfIssueMatch": true
         },
         "passportNumber": {
-            "passportNumberFromSource": "S3733862",
-            "passportNumberMatch": null
+            "passportNumberFromSource": "12345678",
+            "passportNumberMatch": true
         },
         "name": {
-            "nameScore": null,
-            "nameMatch": null,
-            "surnameFromPassport": "SHIRHATTI",
-            "nameFromPassport": "OMKAR MILIND"
+            "nameMatch": true,
+            "surnameFromPassport": "SAMPLE",
+            "nameScore": 1,
+            "nameFromPassport": "SAMPLE SAMPLE"
         },
-        "typeOfApplication": "Tatkaal"
- }
+        "typeOfApplication": "SAMPLE"
+    }
 }
 ```
   

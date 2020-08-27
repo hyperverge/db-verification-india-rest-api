@@ -21,7 +21,7 @@ This documentation describes the validation API. The postman collection can be f
 		- [Bank Account Verification](#bank-account-verification)
 		- [Passport Verification](#passport-verification)
 		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status)
-		- [Match Fields](#match-fields)
+		- [Match Fields-Name](#match-fields-Name)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
@@ -30,7 +30,7 @@ This documentation describes the validation API. The postman collection can be f
 		- [Bank Account Verification](#bank-account-verification-1)
 		- [Passport Verification](#passport-verification-1)
 		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status-1)
-		- [Match Fields](#match-fields-1)
+		- [Match Fields-Name](#match-fields-Name-1)
 	- [Status Codes](#status-codes)
 
 
@@ -176,7 +176,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *aadhaarNumber* : Aadhaar Number
 		* *panNumber* :  Pan Number
 
-8) **Match Fields**
+8) **Match Fields-Name**
     * **URL**
       - /api/matchFields
 
@@ -249,13 +249,14 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 }
 ```
 
-### Match Fields
+### Match Fields-Name
 ```
 {
-    name: <required, Object>,
-    value1: <required, String>,
-    value2: <required, String>,
-    leniency: <String>
+    name: <required, Object> {
+    	value1: <required, String>,
+    	value2: <required, String>,
+    	leniency: <String> ["lenient", "strict"]
+    }
 }
 
 ```
@@ -491,7 +492,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* Incase of a successful validation, the response would have the following schema.
 
 	```
-{
+	{
     "status": "success",
     "statusCode": "200",
     "result": {
@@ -511,20 +512,20 @@ Please do not expose the appid and appkey on browser applications. In case of a 
             "nameFromPassport": "SAMPLE SAMPLE"
         },
         "typeOfApplication": "SAMPLE"
-    }
-}
+    	}
+	}
 	```
   
 * Error Responses:
 	 
 	 * Incase the  file Number or dob are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
-```
-{
+	```
+	{
     "status": "failure",
     "statusCode": "422",
     "error": "Entered id is not found in any database"
-}
-```
+	}
+	```
 
 ### Aadhaar Pan Link Status
 
@@ -534,13 +535,13 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* Incase the Aadhaar and Pan are linked, the response would have the following schema.
 	
 	```
-{
+	{
     "status": "success",
     "statusCode": "200",
     "result": {
         "message": "Your PAN is linked to Aadhaar Number  XXXX XXXX 2071."
+		}
 	}
-}
 	```
 * Success Response:
 
@@ -548,28 +549,28 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* Incase the Aadhar and Pan are not linked, the response would have the following schema.
 
 	```
-{
+	{
     "status": "success",
     "statusCode": "200",
     "result": {
         "code": 535,
         "message": "Aadhar and Pan are not linked"
     }
-}
+	}
 	```
 
 * Error Responses:
 
 	 * Incase the  aadhaar number and pan number are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
-```
-{
+	```
+	{
     "status": "failure",
     "statusCode": "422",
     "error": "Invalid Pan or Aadhaar"
-}
-```
+	}
+	```
 
-### Match Fields
+### Match Fields-Name
 
 * Success Response:
 
@@ -578,15 +579,14 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 
 	
 	```
-{
+	{
     "status": "success",
     "statusCode": "200",
     "result": {
         "name": true,
-        "all": true
-    	}
-}
-
+         "all": true
+     }
+	}
 	```
 * Success Response:
 
@@ -594,15 +594,14 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 	* Incase the two values are have low similiarity.
 
 	```
-{
+	{
     "status": "success",
     "statusCode": "200",
     "result": {
         "name": false,
-        "all": false
+         "all": false
     	}
-}
-
+	}
 	```
 
 

@@ -21,6 +21,7 @@ This documentation describes the validation API. The postman collection can be f
 		- [Bank Account Verification](#bank-account-verification)
 		- [Passport Verification](#passport-verification)
 		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status)
+		- [Match Fields](#match-fields)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
@@ -29,6 +30,7 @@ This documentation describes the validation API. The postman collection can be f
 		- [Bank Account Verification](#bank-account-verification-1)
 		- [Passport Verification](#passport-verification-1)
 		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status-1)
+		- [Match Fields](#match-fields-1)
 	- [Status Codes](#status-codes)
 
 
@@ -174,6 +176,24 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *aadhaarNumber* : Aadhaar Number
 		* *panNumber* :  Pan Number
 
+8) **Match Fields**
+    * **URL**
+      - /api/matchFields
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *name* : Object field with two values to be compared and comparison leniency.
+		* *value1* :  First value of string to be compared
+		* *value2* :  Second value of string to be compared
+		* *leniency* :  Lenient or Strict comparison
+
 ## Request Structure
 
 ### Verify PAN
@@ -228,6 +248,18 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     panNumber: <required, String>
 }
 ```
+
+### Match Fields
+```
+{
+    name: <required, Object>,
+    value1: <required, String>,
+    value2: <required, String>,
+    leniency: <String>
+}
+
+```
+
 ## Response Structure
 
 ### Verify PAN
@@ -536,6 +568,43 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     "error": "Invalid Pan or Aadhaar"
 }
 ```
+
+### Match Fields
+
+* Success Response:
+
+	* Code: **200**
+	* Incase the two values are have high similiarity.
+
+	
+	```
+{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "name": true,
+        "all": true
+    	}
+}
+
+	```
+* Success Response:
+
+	* Code: **200**
+	* Incase the two values are have low similiarity.
+
+	```
+{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "name": false,
+        "all": false
+    	}
+}
+
+	```
+
 
 #### Common Errors:
   * Incase the format of input is incorrect, the following response will be sent status code `400`

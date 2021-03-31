@@ -193,6 +193,7 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *value1* :  First value of string to be compared
 		* *value2* :  Second value of string to be compared
 		* *leniency* :  Lenient or Strict comparison
+		* *preferences* :  keys for name match preferences. Refer structure below.
 
 ## Request Structure
 
@@ -255,11 +256,17 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     name: <required, Object> {
     	value1: <required, String>,
     	value2: <required, String>,
-    	leniency: <String> ["lenient", "strict"]
+    	leniency: <String> ["lenient", "strict"],
+		preference: <Object>{
+			"removeSuffix": <String> ["yes", "no"],
+			"phonetic": <String> ["yes", "no"],
+			"distanceRule": <String> ["yes", "no"],
+		}
     }
 }
 
 ```
+Please Note: Only one of leniency and preference is allowed.
 
 ## Response Structure
 

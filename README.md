@@ -19,12 +19,18 @@ This documentation describes the validation API. The postman collection can be f
 		- [DL Verification and Extraction](#dl-verification-and-extraction)
 		- [VoterId Check](#voterId-check)
 		- [Bank Account Verification](#bank-account-verification)
+		- [Passport Verification](#passport-verification)
+		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status)
+		- [Match Fields-Name](#match-fields-Name)
 	- [Response Structure](#response-structure)
 		- [Verify PAN](#verify-pan-1)
 		- [PAN Name Fetch](#pan-name-fetch-1)
 		- [DL Verification and Extraction](#dl-verification-and-extraction-1)
 		- [VoterId Check](#voterId-check-1)
 		- [Bank Account Verification](#bank-account-verification-1)
+		- [Passport Verification](#passport-verification-1)
+		- [Aadhaar Pan Link Status](#aadhaar-pan-link-status-1)
+		- [Match Fields-Name](#match-fields-Name-1)
 	- [Status Codes](#status-codes)
 
 
@@ -135,6 +141,60 @@ Please do not expose the appid and appkey on browser applications. In case of a 
 		* *ifsc* : IFSC Code of the Account's Branch
 		* *accountNumber* :  Account Number of the Bank Account
 
+6) **Passport Verification**
+    * **URL**
+      - /api/verifyPassport
+
+	* **Method**
+	`POST`
+	
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *fileNo* : The Passport Reference File Number 
+		* *dob* :  Date of Birth
+		* *doi* :  Date of Issue
+		* *passportNo* :  Passport Number
+		* *name* :  Name on Passport
+
+7) **Aadhaar Pan Link Status**
+    * **URL**
+      - /api/verifyAadhaarPanLink
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *aadhaarNumber* : Aadhaar Number
+		* *panNumber* :  Pan Number
+
+8) **Match Fields-Name**
+    * **URL**
+      - /api/matchFields
+
+	* **Method**
+	`POST`
+
+	* **Header**
+		* content-type : application/json
+		* appId
+		* appKey
+
+	* **Request Body**
+		* *name* : Object field with two values to be compared and comparison leniency.
+		* *value1* :  First value of string to be compared
+		* *value2* :  Second value of string to be compared
+		* *leniency* :  Lenient or Strict comparison
+		* *preferences* :  keys for name match preferences. Refer structure below.
+
 ## Request Structure
 
 ### Verify PAN
@@ -172,6 +232,41 @@ Please do not expose the appid and appkey on browser applications. In case of a 
     accountNumber: <required, String>
 }
 ```
+### Passport Verification
+```
+{
+    fileNo: <required, String>,
+    dob: <required, String>,
+    doi: <String>,
+    passportNo: <String>,
+    name: <String>
+}
+```
+### Aadhaar Pan Link Status
+```
+{
+    aadhaarNumber: <required, String>,
+    panNumber: <required, String>
+}
+```
+
+### Match Fields-Name
+```
+{
+    name: <required, Object> {
+    	value1: <required, String>,
+    	value2: <required, String>,
+    	leniency: <String> ["lenient", "strict"],
+		preference: <Object>{
+			"removeSuffix": <String> ["yes", "no"],
+			"phonetic": <String> ["yes", "no"],
+			"distanceRule": <String> ["yes", "no"],
+		}
+    }
+}
+
+```
+Please Note: Only one of leniency and preference is allowed.
 
 ## Response Structure
 
@@ -396,6 +491,126 @@ Please do not expose the appid and appkey on browser applications. In case of a 
          }
        }
        ```
+ 
+### Passport Verification
+* Success Response:
+
+	* Code: **200**
+	* Incase of a successful validation, the response would have the following schema.
+
+	```
+	{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "applicationDate": "10/10/1000",
+        "dateOfIssue": {
+            "dispatchedOnFromSource": "10/10/1000",
+            "dateOfIssueMatch": true
+        },
+        "passportNumber": {
+            "passportNumberFromSource": "12345678",
+            "passportNumberMatch": true
+        },
+        "name": {
+            "nameMatch": true,
+            "surnameFromPassport": "SAMPLE",
+            "nameScore": 1,
+            "nameFromPassport": "SAMPLE SAMPLE"
+        },
+        "typeOfApplication": "SAMPLE"
+    	}
+	}
+	```
+  
+* Error Responses:
+	 
+	 * Incase the  file Number or dob are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
+	```
+	{
+    "status": "failure",
+    "statusCode": "422",
+    "error": "Entered id is not found in any database"
+	}
+	```
+
+### Aadhaar Pan Link Status
+
+* Success Response:
+
+	* Code: **200**
+	* Incase the Aadhaar and Pan are linked, the response would have the following schema.
+	
+	```
+	{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "message": "Your PAN is linked to Aadhaar Number  XXXX XXXX 2071."
+		}
+	}
+	```
+* Success Response:
+
+	* Code: **200**
+	* Incase the Aadhar and Pan are not linked, the response would have the following schema.
+
+	```
+	{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "code": 535,
+        "message": "Aadhar and Pan are not linked"
+    }
+	}
+	```
+
+* Error Responses:
+
+	 * Incase the  aadhaar number and pan number are incorrect, then following response will be sent with status code `422` and **result.status** `failure`
+	```
+	{
+    "status": "failure",
+    "statusCode": "422",
+    "error": "Invalid Pan or Aadhaar"
+	}
+	```
+
+### Match Fields-Name
+
+* Success Response:
+
+	* Code: **200**
+	* Incase the two values are have high similiarity.
+
+	
+	```
+	{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "name": true,
+         "all": true
+     }
+	}
+	```
+* Success Response:
+
+	* Code: **200**
+	* Incase the two values are have low similiarity.
+
+	```
+	{
+    "status": "success",
+    "statusCode": "200",
+    "result": {
+        "name": false,
+         "all": false
+    	}
+	}
+	```
+
 
 #### Common Errors:
   * Incase the format of input is incorrect, the following response will be sent status code `400`
@@ -431,10 +646,12 @@ The following are the various error codes
 |Code|Description|
 |----|----|
 |200|Success - Data was present in DB and the necessary details have been returned in the body|
-|422|Not found in DB or invalid input combination|
 |400|Invalid Input Format or Missing Input parameter. Please check your input to the API|
 |401|Unauthorized - Please contact HyperVerge|
+|404|Invalid Endpoint - Please check the API call|
+|422|Not found in DB or invalid input combination|
 |429|Rate Limit Exceeded - Please contact HyperVerge to increase rate limit|
 |500|Internal Server Error - Please retry|
 |503|Source not Available - Please retry after some time|
-|404|Invalid Endpoint - Please check the API call|
+|504|Issue with the external service|
+
